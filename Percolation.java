@@ -9,35 +9,29 @@ public class Percolation {
   
   private WeightedQuickUnionUF uf;
 
-  public Percolation(int N)               // create N-by-N grid, with all sites blocked
-    { 
-    if (N <= 0) {
-            throw new java.lang.IllegalArgumentException(
-                "N must be larger than 0"
-            );
-        }
+  // create N-by-N grid, with all sites blocked
+  public Percolation(int N) { 
+        if (N <= 0) {
+            throw new java.lang.IllegalArgumentException("N must be larger than 0");
+        } //if
         rowLen = N;
         gridSize = N*N;
         uf = new WeightedQuickUnionUF(gridSize + 2);
         grid = new boolean[gridSize];
         topIndex = gridSize;
         bottomIndex = gridSize + 1;
-   }
+   } //Percolation
   
-   public void open(int iOne, int jOne)          // open site (row i, column j) if it is not open already
-   {
-     checkInput(iOne, jOne);
-
+   // open site (row i, column j) if it is not open already
+   public void open(int iOne, int jOne) {
+        checkInput(iOne, jOne);
         // Change indexes to start at 1, not 0
         int i = iOne - 1;
         int j = jOne - 1;
-
         int index = getIndex(i, j);
 
         if (!grid[index]) {
-          
             grid[index] = true;
-
             // If the spot we just opened has any open neighbors, connect them
             int n; // Neighbor's index
             boolean hasN = false;
@@ -46,13 +40,13 @@ public class Percolation {
                 if (n != -1  && isOpen(n)) {
                     uf.union(index, n);
                     hasN = true;
-                }
-          }
+                } //for
+            } //if
 
             // If it is in the top row, connect it with the top node
             if (i == 0) {
                 uf.union(index, topIndex);
-            }
+                }
             if (hasN) {
                 // check if this made any of the bottom nodes connected
                 // to the top
@@ -60,13 +54,14 @@ public class Percolation {
                     if (isOpen(b) && uf.connected(topIndex, b)) {
                         uf.union(b, bottomIndex);
                         break;
-                    }
-                }
-            } else if (1 == gridSize) {
+                    } //for
+                } //if
+            } 
+            else if (1 == gridSize) {
                 uf.union(index, bottomIndex);
-            }
-        }
-    }
+            } //elseif
+        } //if
+    } //open
    
    public boolean isOpen(int index) {    // is site (row i, column j) open?
      return grid[index];
